@@ -208,3 +208,9 @@ body::after {
   animation: spin 0.7s linear infinite;
 }
 .power-btn.loading .icon { opacity: 0.2; }
+
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
