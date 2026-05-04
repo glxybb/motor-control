@@ -242,7 +242,7 @@
     </div>
 
     <div class="btn-wrap">
-      <button class="power-btn" id="powerBtn" onclick="toggleMotor()">
+      <button class="power-btn" id="powerBtn" >
         <div class="ring"></div>
         <div class="ring2"></div>
         <div class="core">
@@ -269,10 +269,12 @@
 </div>
 
 <script>
-  // ── Cloudflare Worker URL ──
+  // ── Worker URL ──
   const WORKER_URL = 'https://vswitch1worker1.glxy8b.workers.dev';
   // ───────────────────────────────────────────────────────
 
+
+  document.getElementById('powerBtn').addEventListener('click', toggleMotor);
 
   let motorOn   = false;
   let isLoading = false;
