@@ -105,6 +105,19 @@
   </div>
 </div>
 <script>
+  //  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%      Password protection    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  var PASSWORD = "gammaecho1!?"; // change this to your password
+  var entered = sessionStorage.getItem("auth");
+  if (entered !== PASSWORD) {
+    var attempt = prompt("Enter passcode:");
+    if (attempt !== PASSWORD) {
+      document.body.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0c10;color:#ff3b5c;font-family:monospace;font-size:16px;\">Access Denied</div>";
+      throw new Error("Unauthorized");
+    }
+    sessionStorage.setItem("auth", PASSWORD);
+  }
+
   var WORKER_URL = 'https://vswitch1worker1.glxy8b.workers.dev';
   var motorOn = false;
   var isLoading = false;
