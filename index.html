@@ -447,7 +447,7 @@
       const res = await fetch(MOTOR_WORKER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: next ? 'setPowerState', value: 'On' })
+        body: JSON.stringify({ action: 'setPowerState', value: next ? 'On' : 'Off' })
       });
       const data = await res.json();
       if (res.ok && data.success !== false) {
