@@ -8,289 +8,75 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0a0c10;
-      --panel: #111418;
-      --border: #1e2530;
-      --on: #00e5a0;
-      --on-glow: rgba(0,229,160,0.35);
-      --off: #ff3b5c;
-      --off-glow: rgba(255,59,92,0.35);
-      --amber: #ffb300;
-      --amber-glow: rgba(255,179,0,0.35);
-      --idle: #2a3040;
-      --text: #c8d4e0;
-      --muted: #4a5568;
-      --mono: 'Share Tech Mono', monospace;
-      --sans: 'Rajdhani', sans-serif;
+      --bg: #0a0c10; --panel: #111418; --border: #1e2530;
+      --on: #00e5a0; --on-glow: rgba(0,229,160,0.35);
+      --off: #ff3b5c; --off-glow: rgba(255,59,92,0.35);
+      --amber: #ffb300; --amber-glow: rgba(255,179,0,0.35);
+      --idle: #2a3040; --text: #c8d4e0; --muted: #4a5568;
+      --mono: 'Share Tech Mono', monospace; --sans: 'Rajdhani', sans-serif;
     }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
-      );
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    .container {
-      position: relative;
-      width: 340px;
-      z-index: 5;
-    }
-
-    /* ── Page Header ─────────────────────────────────────── */
-    .page-header {
-      text-align: center;
-      margin-bottom: 36px;
-    }
-    .page-header .label {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 4px;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .page-header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: 5px;
-      text-transform: uppercase;
-      color: var(--text);
-    }
-
-    /* ── Device Card ─────────────────────────────────────── */
-    .device-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px 24px;
-      margin-bottom: 20px;
-      position: relative;
-      overflow: hidden;
-    }
-    .device-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent, #00e5a0), transparent);
-      opacity: 0.6;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-    }
-    .card-title {
-      font-family: var(--mono);
-      font-size: 13px;
-      letter-spacing: 3px;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-    .card-badge {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 2px;
-      padding: 3px 8px;
-      border-radius: 3px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-    }
-
-    /* ── Status row ──────────────────────────────────────── */
-    .status-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 28px;
-    }
-    .status-label {
-      font-size: 13px;
-      letter-spacing: 2px;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-    .status-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .status-value {
-      font-family: var(--mono);
-      font-size: 13px;
-      letter-spacing: 3px;
-    }
-    .status-value.active  { color: var(--on); }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+    body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px); pointer-events: none; z-index: 10; }
+    .container { position: relative; width: 340px; z-index: 5; }
+    .page-header { text-align: center; margin-bottom: 36px; }
+    .page-header .label { font-family: var(--mono); font-size: 11px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+    .page-header h1 { font-size: 26px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; color: var(--text); }
+    .device-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
+    .device-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--card-accent, #00e5a0), transparent); opacity: 0.6; }
+    .led-card { --card-accent: #ffb300; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .card-title { font-family: var(--mono); font-size: 13px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
+    .card-badge { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; padding: 3px 8px; border-radius: 3px; border: 1px solid var(--border); color: var(--muted); }
+    .status-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .status-label { font-size: 13px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+    .status-right { display: flex; align-items: center; gap: 10px; }
+    .status-value { font-family: var(--mono); font-size: 13px; letter-spacing: 3px; }
+    .status-value.active   { color: var(--on); }
+    .status-value.active-amber { color: var(--amber); }
     .status-value.inactive { color: var(--off); }
-    .status-value.idle    { color: var(--muted); }
-    .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--idle);
-      transition: background 0.4s, box-shadow 0.4s;
-    }
-    .dot.active  { background: var(--on);  box-shadow: 0 0 8px var(--on-glow); }
-    .dot.inactive { background: var(--off); box-shadow: 0 0 8px var(--off-glow); }
-
-    /* ── Power / Toggle Button ───────────────────────────── */
-    .btn-wrap {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 28px;
-    }
-
-    .power-btn {
-      position: relative;
-      width: 110px; height: 110px;
-      border-radius: 50%;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .status-value.idle     { color: var(--muted); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--idle); transition: background 0.4s, box-shadow 0.4s; }
+    .dot.active        { background: var(--on);    box-shadow: 0 0 8px var(--on-glow); }
+    .dot.active-amber  { background: var(--amber); box-shadow: 0 0 8px var(--amber-glow); }
+    .dot.inactive      { background: var(--off);   box-shadow: 0 0 8px var(--off-glow); }
+    .btn-wrap { display: flex; justify-content: center; margin-bottom: 28px; }
+    .power-btn { position: relative; width: 110px; height: 110px; border-radius: 50%; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .power-btn:focus { outline: none; }
-
-    .ring, .ring2 {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      border: 1.5px solid var(--idle);
-      transition: border-color 0.4s, box-shadow 0.4s;
-    }
+    .ring, .ring2 { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--idle); transition: border-color 0.4s, box-shadow 0.4s; }
     .ring2 { inset: 8px; }
-
-    .core {
-      position: relative;
-      width: 72px; height: 72px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: 1.5px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: border-color 0.4s, box-shadow 0.4s;
-      z-index: 2;
-    }
-
-    .icon {
-      width: 32px; height: 32px;
-      stroke: var(--muted);
-      transition: stroke 0.4s;
-    }
-
-    /* Active states */
-    .power-btn.on .ring  { border-color: var(--on); box-shadow: 0 0 20px var(--on-glow); animation: pulse 2s ease-in-out infinite; }
+    .core { position: relative; width: 72px; height: 72px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; transition: border-color 0.4s, box-shadow 0.4s; z-index: 2; }
+    .icon { width: 32px; height: 32px; stroke: var(--muted); transition: stroke 0.4s; }
+    .power-btn.on .ring  { border-color: var(--on); box-shadow: 0 0 20px var(--on-glow); animation: pulse-green 2s ease-in-out infinite; }
     .power-btn.on .ring2 { border-color: var(--on); opacity: 0.5; }
     .power-btn.on .core  { border-color: var(--on); box-shadow: 0 0 18px var(--on-glow); }
     .power-btn.on .icon  { stroke: var(--on); }
-
     .power-btn.off .ring  { border-color: var(--off); }
     .power-btn.off .ring2 { border-color: var(--off); opacity: 0.5; }
     .power-btn.off .core  { border-color: var(--off); box-shadow: 0 0 12px var(--off-glow); }
     .power-btn.off .icon  { stroke: var(--off); }
-
-    /* LED-specific amber accent when ON */
     .led-card .power-btn.on .ring  { border-color: var(--amber); box-shadow: 0 0 20px var(--amber-glow); animation: pulse-amber 2s ease-in-out infinite; }
     .led-card .power-btn.on .ring2 { border-color: var(--amber); opacity: 0.5; }
     .led-card .power-btn.on .core  { border-color: var(--amber); box-shadow: 0 0 18px var(--amber-glow); }
     .led-card .power-btn.on .icon  { stroke: var(--amber); }
-    .led-card .status-value.active { color: var(--amber); }
-    .led-card .dot.active { background: var(--amber); box-shadow: 0 0 8px var(--amber-glow); }
-    .led-card { --accent: var(--amber); }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 20px var(--on-glow); }
-      50%       { box-shadow: 0 0 40px var(--on-glow), 0 0 60px rgba(0,229,160,0.15); }
-    }
-    @keyframes pulse-amber {
-      0%, 100% { box-shadow: 0 0 20px var(--amber-glow); }
-      50%       { box-shadow: 0 0 40px var(--amber-glow), 0 0 60px rgba(255,179,0,0.15); }
-    }
-
-    /* ── Activity Log ────────────────────────────────────── */
-    .log {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 12px;
-      max-height: 120px;
-      overflow-y: auto;
-    }
+    @keyframes pulse-green { 0%,100% { box-shadow: 0 0 20px var(--on-glow); } 50% { box-shadow: 0 0 40px var(--on-glow), 0 0 60px rgba(0,229,160,0.15); } }
+    @keyframes pulse-amber { 0%,100% { box-shadow: 0 0 20px var(--amber-glow); } 50% { box-shadow: 0 0 40px var(--amber-glow), 0 0 60px rgba(255,179,0,0.15); } }
+    .log { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 6px; padding: 12px; max-height: 120px; overflow-y: auto; }
     .log::-webkit-scrollbar { width: 3px; }
-    .log::-webkit-scrollbar-track { background: transparent; }
     .log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    .log-title {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--muted);
-      margin-bottom: 8px;
-      letter-spacing: 2px;
-    }
+    .log-title { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-bottom: 8px; letter-spacing: 2px; }
     .log-entries { list-style: none; }
-    .log-entries li {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      padding: 2px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-      display: flex;
-      gap: 8px;
-    }
-    .log-entries li .ts { color: #2d3748; flex-shrink: 0; }
-    .log-entries li.ok  .msg { color: var(--on); }
-    .log-entries li.err .msg { color: var(--off); }
-    .log-entries li.info .msg { color: #5a7a9a; }
+    .log-entries li { font-family: var(--mono); font-size: 11px; color: var(--muted); padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; gap: 8px; }
+    .log-entries li .ts  { color: #2d3748; flex-shrink: 0; }
+    .log-entries li.ok   .msg { color: var(--on); }
     .log-entries li.amber .msg { color: var(--amber); }
-
-    /* ── Footer ──────────────────────────────────────────── */
-    .footer {
-      text-align: center;
-      margin-top: 8px;
-    }
-    .footer span {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--border);
-      letter-spacing: 2px;
-    }
+    .log-entries li.err  .msg { color: var(--off); }
+    .log-entries li.info .msg { color: #5a7a9a; }
+    .footer { text-align: center; margin-top: 8px; }
+    .footer span { font-family: var(--mono); font-size: 10px; color: var(--border); letter-spacing: 2px; }
   </style>
 </head>
 <body>
-
 <div class="container">
 
   <div class="page-header">
@@ -298,13 +84,12 @@
     <h1>ESP32 Panel</h1>
   </div>
 
-  <!-- ── MOTOR CARD ─────────────────────────────────────── -->
-  <div class="device-card" id="motorCard">
+  <!-- MOTOR CARD -->
+  <div class="device-card">
     <div class="card-header">
       <span class="card-title">// Motor</span>
-      <span class="card-badge" id="motorBadge">vswitch1</span>
+      <span class="card-badge">vswitch1</span>
     </div>
-
     <div class="status-row">
       <span class="status-label">Status</span>
       <div class="status-right">
@@ -312,7 +97,6 @@
         <div class="dot" id="motorDot"></div>
       </div>
     </div>
-
     <div class="btn-wrap">
       <button class="power-btn" id="motorBtn" aria-label="Toggle Motor">
         <div class="ring"></div>
@@ -325,7 +109,6 @@
         </div>
       </button>
     </div>
-
     <div class="log">
       <div class="log-title">// Motor Log</div>
       <ul class="log-entries" id="motorLog">
@@ -334,13 +117,12 @@
     </div>
   </div>
 
-  <!-- ── LED CARD ───────────────────────────────────────── -->
-  <div class="device-card led-card" id="ledCard">
+  <!-- LED CARD -->
+  <div class="device-card led-card">
     <div class="card-header">
       <span class="card-title">// LED Light</span>
-      <span class="card-badge" id="ledBadge">GPIO 2</span>
+      <span class="card-badge">GPIO 2</span>
     </div>
-
     <div class="status-row">
       <span class="status-label">Status</span>
       <div class="status-right">
@@ -348,13 +130,11 @@
         <div class="dot" id="ledDot"></div>
       </div>
     </div>
-
     <div class="btn-wrap">
       <button class="power-btn" id="ledBtn" aria-label="Toggle LED">
         <div class="ring"></div>
         <div class="ring2"></div>
         <div class="core">
-          <!-- Lightbulb icon -->
           <svg class="icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M22 6C16.477 6 12 10.477 12 16c0 3.6 1.8 6.8 4.5 8.7V28h11v-3.3C30.2 22.8 32 19.6 32 16c0-5.523-4.477-10-10-10z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M16.5 32h11M18 36h8" stroke-width="2" stroke-linecap="round"/>
@@ -362,7 +142,6 @@
         </div>
       </button>
     </div>
-
     <div class="log">
       <div class="log-title">// LED Log</div>
       <ul class="log-entries" id="ledLog">
@@ -371,122 +150,95 @@
     </div>
   </div>
 
-  <div class="footer">
-    <span>ESP32 · SINRICPRO · CLOUDFLARE</span>
-  </div>
+  <div class="footer"><span>ESP32 · SINRICPRO · CLOUDFLARE</span></div>
 
 </div>
-
 <script>
-  // ── CONFIG — update these URLs ────────────────────────────────────────────
-  // Motor: your existing Cloudflare Worker URL
-  const MOTOR_WORKER_URL = 'https://vswitch1worker1.glxy8b.workers.dev';
+  // ── Worker URLs — update these ─────────────────────────────────────────────
+  var MOTOR_WORKER_URL = 'https://vswitch1worker1.glxy8b.workers.dev';
+  var LED_WORKER_URL   = 'https://led-worker.glxy8b.workers.dev';
+  // ──────────────────────────────────────────────────────────────────────────
 
-  // LED: your NEW Cloudflare Worker URL (see led_worker.js)
-  // Replace this with the URL you get after deploying the LED worker
-  const LED_WORKER_URL = 'https://led-worker.glxy8b.workers.dev';
-  // ─────────────────────────────────────────────────────────────────────────
+  var motorOn = false;
+  var ledOn   = false;
 
-  // ── State ─────────────────────────────────────────────────────────────────
-  let motorOn = false;
-  let ledOn   = false;
-
-  // ── DOM refs ──────────────────────────────────────────────────────────────
-  const motorBtn        = document.getElementById('motorBtn');
-  const motorDot        = document.getElementById('motorDot');
-  const motorStatusText = document.getElementById('motorStatusText');
-  const motorLog        = document.getElementById('motorLog');
-
-  const ledBtn          = document.getElementById('ledBtn');
-  const ledDot          = document.getElementById('ledDot');
-  const ledStatusText   = document.getElementById('ledStatusText');
-  const ledLog          = document.getElementById('ledLog');
-
-  // ── Helpers ───────────────────────────────────────────────────────────────
   function timestamp() {
     return new Date().toTimeString().slice(0, 8);
   }
 
   function addLog(logEl, message, type) {
-    const li  = document.createElement('li');
+    var li  = document.createElement('li');
     li.className = type;
-    const ts  = document.createElement('span');
+    var ts  = document.createElement('span');
     ts.className = 'ts';
     ts.textContent = timestamp();
-    const msg = document.createElement('span');
+    var msg = document.createElement('span');
     msg.className = 'msg';
     msg.textContent = message;
     li.appendChild(ts);
     li.appendChild(msg);
     logEl.insertBefore(li, logEl.firstChild);
-    // Keep log tidy — max 20 entries
-    while (logEl.children.length > 20) logEl.removeChild(logEl.lastChild);
+    while (logEl.children.length > 20) { logEl.removeChild(logEl.lastChild); }
   }
 
   function updateMotorUI(on) {
     motorOn = on;
-    motorBtn.className = 'power-btn ' + (on ? 'on' : 'off');
-    motorDot.className = 'dot ' + (on ? 'active' : 'inactive');
-    motorStatusText.className = 'status-value ' + (on ? 'active' : 'inactive');
-    motorStatusText.textContent = on ? 'RUNNING' : 'STOPPED';
+    document.getElementById('motorBtn').className       = 'power-btn ' + (on ? 'on' : 'off');
+    document.getElementById('motorDot').className       = 'dot ' + (on ? 'active' : 'inactive');
+    document.getElementById('motorStatusText').className = 'status-value ' + (on ? 'active' : 'inactive');
+    document.getElementById('motorStatusText').textContent = on ? 'RUNNING' : 'STOPPED';
   }
 
   function updateLedUI(on) {
     ledOn = on;
-    ledBtn.className = 'power-btn ' + (on ? 'on' : 'off');
-    ledDot.className = 'dot ' + (on ? 'active' : 'inactive');
-    ledStatusText.className = 'status-value ' + (on ? 'active' : 'inactive');
-    ledStatusText.textContent = on ? 'ON' : 'OFF';
+    document.getElementById('ledBtn').className       = 'power-btn ' + (on ? 'on' : 'off');
+    document.getElementById('ledDot').className       = 'dot ' + (on ? 'active-amber' : 'inactive');
+    document.getElementById('ledStatusText').className = 'status-value ' + (on ? 'active-amber' : 'inactive');
+    document.getElementById('ledStatusText').textContent = on ? 'ON' : 'OFF';
   }
 
-  // ── Motor control ─────────────────────────────────────────────────────────
+  // Motor uses query param pattern (?state=On) — the original working approach
   async function toggleMotor() {
-    const next = !motorOn;
-    addLog(motorLog, 'Sending ' + (next ? 'ON' : 'OFF') + '...', 'info');
+    var next  = !motorOn;
+    var state = next ? 'On' : 'Off';
+    var logEl = document.getElementById('motorLog');
+    addLog(logEl, 'Sending ' + state + '...', 'info');
     try {
-      const res = await fetch(MOTOR_WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'setPowerState', value: next ? 'On' : 'Off' })
-      });
-      const data = await res.json();
-      if (res.ok && data.success !== false) {
+      var res  = await fetch(MOTOR_WORKER_URL + '?state=' + state);
+      var data = await res.json();
+      if (res.ok) {
         updateMotorUI(next);
-        addLog(motorLog, 'Motor ' + (next ? 'ON' : 'OFF') + ' — OK', 'ok');
+        addLog(logEl, 'Motor ' + state + ' — OK', 'ok');
       } else {
-        addLog(motorLog, 'Error: ' + (data.error || res.status), 'err');
+        addLog(logEl, 'Error: ' + (data.error || res.status), 'err');
       }
     } catch (e) {
-      addLog(motorLog, 'Network error: ' + e.message, 'err');
+      addLog(logEl, 'Network error: ' + e.message, 'err');
     }
   }
 
-  // ── LED control ───────────────────────────────────────────────────────────
+  // LED uses same query param pattern for consistency
   async function toggleLed() {
-    const next = !ledOn;
-    addLog(ledLog, 'Sending LED ' + (next ? 'ON' : 'OFF') + '...', 'info');
+    var next  = !ledOn;
+    var state = next ? 'On' : 'Off';
+    var logEl = document.getElementById('ledLog');
+    addLog(logEl, 'Sending LED ' + state + '...', 'info');
     try {
-      const res = await fetch(LED_WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ state: next ? 'on' : 'off' })
-      });
-      const data = await res.json();
-      if (res.ok && data.success !== false) {
+      var res  = await fetch(LED_WORKER_URL + '?state=' + state);
+      var data = await res.json();
+      if (res.ok) {
         updateLedUI(next);
-        addLog(ledLog, 'LED ' + (next ? 'ON' : 'OFF') + ' — OK', 'amber');
+        addLog(logEl, 'LED ' + state + ' — OK', 'amber');
       } else {
-        addLog(ledLog, 'Error: ' + (data.error || res.status), 'err');
+        addLog(logEl, 'Error: ' + (data.error || res.status), 'err');
       }
     } catch (e) {
-      addLog(ledLog, 'Network error: ' + e.message, 'err');
+      addLog(logEl, 'Network error: ' + e.message, 'err');
     }
   }
 
-  // ── Wire up buttons (no inline handlers — CSP safe) ───────────────────────
-  motorBtn.addEventListener('click', toggleMotor);
-  ledBtn.addEventListener('click', toggleLed);
+  document.getElementById('motorBtn').addEventListener('click', toggleMotor);
+  document.getElementById('ledBtn').addEventListener('click', toggleLed);
 </script>
-
 </body>
 </html>
