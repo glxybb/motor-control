@@ -3,226 +3,270 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ESP32 Control Panel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet"/>
+  <title>Device Control</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0a0c10; --panel: #111418; --border: #1e2530;
-      --on: #00e5a0; --on-glow: rgba(0,229,160,0.35);
-      --off: #ff3b5c; --off-glow: rgba(255,59,92,0.35);
-      --amber: #ffb300; --amber-glow: rgba(255,179,0,0.35);
-      --idle: #2a3040; --text: #c8d4e0; --muted: #4a5568;
-      --mono: 'Share Tech Mono', monospace; --sans: 'Rajdhani', sans-serif;
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --border: rgba(0,0,0,0.08);
+      --border-md: rgba(0,0,0,0.14);
+      --text: #1a1a1a;
+      --muted: #888;
+      --faint: #bbb;
+      --green-fill: #eaf3de;
+      --green-border: #97c459;
+      --green-text: #3b6d11;
+      --green-dot: #639922;
+      --amber-fill: #faeeda;
+      --amber-border: #ef9f27;
+      --amber-text: #854f0b;
+      --amber-dot: #ba7517;
+      --red-fill: #fcebeb;
+      --red-border: #f09595;
+      --red-text: #a32d2d;
+      --red-dot: #e24b4a;
+      --sans: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+      --radius: 16px;
+      --radius-sm: 10px;
     }
-    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; overflow-x: hidden; }
-    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
-    body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px); pointer-events: none; z-index: 10; }
-    .container { position: relative; width: 340px; z-index: 5; }
-    .page-header { text-align: center; margin-bottom: 36px; }
-    .page-header .label { font-family: var(--mono); font-size: 11px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
-    .page-header h1 { font-size: 26px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; color: var(--text); }
-    .device-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
-    .device-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--card-accent, #00e5a0), transparent); opacity: 0.6; }
-    .led-card { --card-accent: #ffb300; }
-    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-    .card-title { font-family: var(--mono); font-size: 13px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
-    .card-badge { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; padding: 3px 8px; border-radius: 3px; border: 1px solid var(--border); color: var(--muted); }
-    .status-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
-    .status-label { font-size: 13px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
-    .status-right { display: flex; align-items: center; gap: 10px; }
-    .status-value { font-family: var(--mono); font-size: 13px; letter-spacing: 3px; }
-    .status-value.active   { color: var(--on); }
-    .status-value.active-amber { color: var(--amber); }
-    .status-value.inactive { color: var(--off); }
-    .status-value.idle     { color: var(--muted); }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--idle); transition: background 0.4s, box-shadow 0.4s; }
-    .dot.active        { background: var(--on);    box-shadow: 0 0 8px var(--on-glow); }
-    .dot.active-amber  { background: var(--amber); box-shadow: 0 0 8px var(--amber-glow); }
-    .dot.inactive      { background: var(--off);   box-shadow: 0 0 8px var(--off-glow); }
-    .btn-wrap { display: flex; justify-content: center; margin-bottom: 28px; }
-    .power-btn { position: relative; width: 110px; height: 110px; border-radius: 50%; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .power-btn:focus { outline: none; }
-    .ring, .ring2 { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--idle); transition: border-color 0.4s, box-shadow 0.4s; }
-    .ring2 { inset: 8px; }
-    .core { position: relative; width: 72px; height: 72px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; transition: border-color 0.4s, box-shadow 0.4s; z-index: 2; }
-    .icon { width: 32px; height: 32px; stroke: var(--muted); transition: stroke 0.4s; }
-    .power-btn.on .ring  { border-color: var(--on); box-shadow: 0 0 20px var(--on-glow); animation: pulse-green 2s ease-in-out infinite; }
-    .power-btn.on .ring2 { border-color: var(--on); opacity: 0.5; }
-    .power-btn.on .core  { border-color: var(--on); box-shadow: 0 0 18px var(--on-glow); }
-    .power-btn.on .icon  { stroke: var(--on); }
-    .power-btn.off .ring  { border-color: var(--off); }
-    .power-btn.off .ring2 { border-color: var(--off); opacity: 0.5; }
-    .power-btn.off .core  { border-color: var(--off); box-shadow: 0 0 12px var(--off-glow); }
-    .power-btn.off .icon  { stroke: var(--off); }
-    .led-card .power-btn.on .ring  { border-color: var(--amber); box-shadow: 0 0 20px var(--amber-glow); animation: pulse-amber 2s ease-in-out infinite; }
-    .led-card .power-btn.on .ring2 { border-color: var(--amber); opacity: 0.5; }
-    .led-card .power-btn.on .core  { border-color: var(--amber); box-shadow: 0 0 18px var(--amber-glow); }
-    .led-card .power-btn.on .icon  { stroke: var(--amber); }
-    @keyframes pulse-green { 0%,100% { box-shadow: 0 0 20px var(--on-glow); } 50% { box-shadow: 0 0 40px var(--on-glow), 0 0 60px rgba(0,229,160,0.15); } }
-    @keyframes pulse-amber { 0%,100% { box-shadow: 0 0 20px var(--amber-glow); } 50% { box-shadow: 0 0 40px var(--amber-glow), 0 0 60px rgba(255,179,0,0.15); } }
-    .log { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 6px; padding: 12px; max-height: 120px; overflow-y: auto; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container { width: 100%; max-width: 520px; }
+
+    .page-header { margin-bottom: 28px; }
+    .page-header p { font-size: 12px; font-weight: 400; color: var(--muted); letter-spacing: 0.4px; margin-bottom: 4px; }
+    .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text); letter-spacing: -0.3px; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border-md);
+      border-radius: var(--radius);
+      padding: 24px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .card-label {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.3px;
+      align-self: flex-start;
+    }
+
+    .big-btn {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      border: 0.5px solid var(--border-md);
+      background: var(--bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s, transform 0.12s;
+      flex-shrink: 0;
+    }
+    .big-btn:hover { border-color: rgba(0,0,0,0.22); }
+    .big-btn:active { transform: scale(0.95); }
+
+    .big-btn svg { width: 28px; height: 28px; stroke: var(--muted); transition: stroke 0.2s; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+    .big-btn.on-green { background: var(--green-fill); border-color: var(--green-border); }
+    .big-btn.on-green svg { stroke: var(--green-text); }
+    .big-btn.off { background: var(--red-fill); border-color: var(--red-border); }
+    .big-btn.off svg { stroke: var(--red-text); }
+    .big-btn.on-amber { background: var(--amber-fill); border-color: var(--amber-border); }
+    .big-btn.on-amber svg { stroke: var(--amber-text); }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 400;
+      padding: 5px 12px;
+      border-radius: 99px;
+      border: 0.5px solid var(--border-md);
+      color: var(--muted);
+      background: var(--bg);
+      transition: all 0.2s;
+    }
+    .status-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); transition: background 0.2s; flex-shrink: 0; }
+
+    .status-badge.on-green { background: var(--green-fill); border-color: var(--green-border); color: var(--green-text); }
+    .status-badge.on-green .dot { background: var(--green-dot); }
+    .status-badge.on-amber { background: var(--amber-fill); border-color: var(--amber-border); color: var(--amber-text); }
+    .status-badge.on-amber .dot { background: var(--amber-dot); }
+    .status-badge.off { background: var(--red-fill); border-color: var(--red-border); color: var(--red-text); }
+    .status-badge.off .dot { background: var(--red-dot); }
+
+    .log {
+      width: 100%;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      border: 0.5px solid var(--border);
+      padding: 10px 12px;
+      max-height: 90px;
+      overflow-y: auto;
+    }
     .log::-webkit-scrollbar { width: 3px; }
-    .log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    .log-title { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-bottom: 8px; letter-spacing: 2px; }
-    .log-entries { list-style: none; }
-    .log-entries li { font-family: var(--mono); font-size: 11px; color: var(--muted); padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; gap: 8px; }
-    .log-entries li .ts  { color: #2d3748; flex-shrink: 0; }
-    .log-entries li.ok   .msg { color: var(--on); }
-    .log-entries li.amber .msg { color: var(--amber); }
-    .log-entries li.err  .msg { color: var(--off); }
-    .log-entries li.info .msg { color: #5a7a9a; }
-    .footer { text-align: center; margin-top: 8px; }
-    .footer span { font-family: var(--mono); font-size: 10px; color: var(--border); letter-spacing: 2px; }
+    .log::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 3px; }
+
+    .log-entry {
+      font-size: 11px;
+      font-family: var(--mono);
+      font-weight: 300;
+      color: var(--muted);
+      padding: 2px 0;
+      display: flex;
+      gap: 8px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .log-entry:last-child { border-bottom: none; }
+    .log-entry .ts { color: var(--faint); flex-shrink: 0; }
+    .log-entry.ok .msg   { color: var(--green-text); }
+    .log-entry.amber .msg { color: var(--amber-text); }
+    .log-entry.err .msg  { color: var(--red-text); }
+    .log-entry.info .msg { color: var(--faint); }
+
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      font-family: var(--mono);
+      font-weight: 300;
+      color: var(--faint);
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 400px) {
+      .cards { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 <div class="container">
 
   <div class="page-header">
-    <div class="label">Remote Control Unit</div>
-    <h1>ESP32 Panel</h1>
+    <p>Control panel</p>
+    <h1>My devices</h1>
   </div>
 
-  <!-- MOTOR CARD -->
-  <div class="device-card">
-    <div class="card-header">
-      <span class="card-title">// Motor</span>
-      <span class="card-badge">vswitch1</span>
-    </div>
-    <div class="status-row">
-      <span class="status-label">Status</span>
-      <div class="status-right">
-        <span class="status-value idle" id="motorStatusText">STANDBY</span>
-        <div class="dot" id="motorDot"></div>
+  <div class="cards">
+
+    <!-- MOTOR -->
+    <div class="card">
+      <span class="card-label">Motor</span>
+      <button class="big-btn" id="motorBtn" aria-label="Toggle motor">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2v10"/>
+          <path d="M7.5 5.5A9 9 0 1 0 16.5 5.5"/>
+        </svg>
+      </button>
+      <span class="status-badge" id="motorBadge">
+        <span class="dot"></span>
+        <span id="motorStatusText">Standby</span>
+      </span>
+      <div class="log" id="motorLog">
+        <div class="log-entry info"><span class="ts">--:--:--</span><span class="msg">Waiting…</span></div>
       </div>
     </div>
-    <div class="btn-wrap">
-      <button class="power-btn" id="motorBtn" aria-label="Toggle Motor">
-        <div class="ring"></div>
-        <div class="ring2"></div>
-        <div class="core">
-          <svg class="icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22 8V22" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M14 12.5A14 14 0 1 0 30 12.5" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-          </svg>
-        </div>
-      </button>
-    </div>
-    <div class="log">
-      <div class="log-title">// Motor Log</div>
-      <ul class="log-entries" id="motorLog">
-        <li class="info"><span class="ts">--:--:--</span><span class="msg">Waiting for command...</span></li>
-      </ul>
-    </div>
-  </div>
 
-  <!-- LED CARD -->
-  <div class="device-card led-card">
-    <div class="card-header">
-      <span class="card-title">// LED Light</span>
-      <span class="card-badge">GPIO 2</span>
-    </div>
-    <div class="status-row">
-      <span class="status-label">Status</span>
-      <div class="status-right">
-        <span class="status-value idle" id="ledStatusText">STANDBY</span>
-        <div class="dot" id="ledDot"></div>
+    <!-- LED -->
+    <div class="card">
+      <span class="card-label">LED light</span>
+      <button class="big-btn" id="ledBtn" aria-label="Toggle LED">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2a7 7 0 0 1 4 12.74V17H8v-2.26A7 7 0 0 1 12 2z"/>
+          <path d="M9 17h6M10 20h4"/>
+        </svg>
+      </button>
+      <span class="status-badge" id="ledBadge">
+        <span class="dot"></span>
+        <span id="ledStatusText">Standby</span>
+      </span>
+      <div class="log" id="ledLog">
+        <div class="log-entry info"><span class="ts">--:--:--</span><span class="msg">Waiting…</span></div>
       </div>
     </div>
-    <div class="btn-wrap">
-      <button class="power-btn" id="ledBtn" aria-label="Toggle LED">
-        <div class="ring"></div>
-        <div class="ring2"></div>
-        <div class="core">
-          <svg class="icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22 6C16.477 6 12 10.477 12 16c0 3.6 1.8 6.8 4.5 8.7V28h11v-3.3C30.2 22.8 32 19.6 32 16c0-5.523-4.477-10-10-10z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M16.5 32h11M18 36h8" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-      </button>
-    </div>
-    <div class="log">
-      <div class="log-title">// LED Log</div>
-      <ul class="log-entries" id="ledLog">
-        <li class="info"><span class="ts">--:--:--</span><span class="msg">Waiting for command...</span></li>
-      </ul>
-    </div>
+
   </div>
 
-  <div class="footer"><span>ESP32 · SINRICPRO · CLOUDFLARE</span></div>
+  <div class="footer">ESP32 · SinricPro · Cloudflare</div>
 
 </div>
 <script>
-  // ── Worker URLs — update these ─────────────────────────────────────────────
   var MOTOR_WORKER_URL = 'https://vswitch1worker1.glxy8b.workers.dev';
   var LED_WORKER_URL   = 'https://led-worker.glxy8b.workers.dev';
-  // ──────────────────────────────────────────────────────────────────────────
 
   var motorOn = false;
   var ledOn   = false;
 
-  function timestamp() {
-    return new Date().toTimeString().slice(0, 8);
-  }
+  function ts() { return new Date().toTimeString().slice(0, 8); }
 
   function addLog(logEl, message, type) {
-    var li  = document.createElement('li');
-    li.className = type;
-    var ts  = document.createElement('span');
-    ts.className = 'ts';
-    ts.textContent = timestamp();
-    var msg = document.createElement('span');
-    msg.className = 'msg';
-    msg.textContent = message;
-    li.appendChild(ts);
-    li.appendChild(msg);
-    logEl.insertBefore(li, logEl.firstChild);
-    while (logEl.children.length > 20) { logEl.removeChild(logEl.lastChild); }
+    var d = document.createElement('div');
+    d.className = 'log-entry ' + type;
+    d.innerHTML = '<span class="ts">' + ts() + '</span><span class="msg">' + message + '</span>';
+    logEl.insertBefore(d, logEl.firstChild);
+    while (logEl.children.length > 20) logEl.removeChild(logEl.lastChild);
   }
 
-  function updateMotorUI(on) {
+  function setMotor(on) {
     motorOn = on;
-    document.getElementById('motorBtn').className       = 'power-btn ' + (on ? 'on' : 'off');
-    document.getElementById('motorDot').className       = 'dot ' + (on ? 'active' : 'inactive');
-    document.getElementById('motorStatusText').className = 'status-value ' + (on ? 'active' : 'inactive');
-    document.getElementById('motorStatusText').textContent = on ? 'RUNNING' : 'STOPPED';
+    document.getElementById('motorBtn').className        = 'big-btn ' + (on ? 'on-green' : 'off');
+    document.getElementById('motorBadge').className      = 'status-badge ' + (on ? 'on-green' : 'off');
+    document.getElementById('motorStatusText').textContent = on ? 'Running' : 'Stopped';
   }
 
-  function updateLedUI(on) {
+  function setLed(on) {
     ledOn = on;
-    document.getElementById('ledBtn').className       = 'power-btn ' + (on ? 'on' : 'off');
-    document.getElementById('ledDot').className       = 'dot ' + (on ? 'active-amber' : 'inactive');
-    document.getElementById('ledStatusText').className = 'status-value ' + (on ? 'active-amber' : 'inactive');
-    document.getElementById('ledStatusText').textContent = on ? 'ON' : 'OFF';
+    document.getElementById('ledBtn').className        = 'big-btn ' + (on ? 'on-amber' : 'off');
+    document.getElementById('ledBadge').className      = 'status-badge ' + (on ? 'on-amber' : 'off');
+    document.getElementById('ledStatusText').textContent = on ? 'On' : 'Off';
   }
 
-  // Motor uses query param pattern (?state=On) — the original working approach
   async function toggleMotor() {
     var next  = !motorOn;
     var state = next ? 'On' : 'Off';
-    var logEl = document.getElementById('motorLog');
-    addLog(logEl, 'Sending ' + state + '...', 'info');
+    var log   = document.getElementById('motorLog');
+    addLog(log, 'Sending ' + state + '…', 'info');
     try {
       var res  = await fetch(MOTOR_WORKER_URL + '?state=' + state);
       var data = await res.json();
-      if (res.ok) {
-        updateMotorUI(next);
-        addLog(logEl, 'Motor ' + state + ' — OK', 'ok');
-      } else {
-        addLog(logEl, 'Error: ' + (data.error || res.status), 'err');
-      }
-    } catch (e) {
-      addLog(logEl, 'Network error: ' + e.message, 'err');
-    }
+      if (res.ok) { setMotor(next); addLog(log, 'Motor ' + state.toLowerCase() + ' — OK', 'ok'); }
+      else addLog(log, 'Error: ' + (data.error || res.status), 'err');
+    } catch (e) { addLog(log, 'Network error', 'err'); }
   }
 
-  // LED uses POST with JSON body
   async function toggleLed() {
     var next  = !ledOn;
     var state = next ? 'on' : 'off';
-    var logEl = document.getElementById('ledLog');
-    addLog(logEl, 'Sending LED ' + state + '...', 'info');
+    var log   = document.getElementById('ledLog');
+    addLog(log, 'Sending LED ' + state + '…', 'info');
     try {
       var res  = await fetch(LED_WORKER_URL, {
         method: 'POST',
@@ -230,15 +274,9 @@
         body: JSON.stringify({ state: state })
       });
       var data = await res.json();
-      if (res.ok) {
-        updateLedUI(next);
-        addLog(logEl, 'LED ' + state + ' — OK', 'amber');
-      } else {
-        addLog(logEl, 'Error: ' + (data.error || res.status), 'err');
-      }
-    } catch (e) {
-      addLog(logEl, 'Network error: ' + e.message, 'err');
-    }
+      if (res.ok) { setLed(next); addLog(log, 'LED ' + state + ' — OK', 'amber'); }
+      else addLog(log, 'Error: ' + (data.error || res.status), 'err');
+    } catch (e) { addLog(log, 'Network error', 'err'); }
   }
 
   document.getElementById('motorBtn').addEventListener('click', toggleMotor);
