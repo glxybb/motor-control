@@ -217,14 +217,18 @@
     }
   }
 
-  // LED uses same query param pattern for consistency
+  // LED uses POST with JSON body
   async function toggleLed() {
     var next  = !ledOn;
-    var state = next ? 'On' : 'Off';
+    var state = next ? 'on' : 'off';
     var logEl = document.getElementById('ledLog');
     addLog(logEl, 'Sending LED ' + state + '...', 'info');
     try {
-      var res  = await fetch(LED_WORKER_URL + '?state=' + state);
+      var res  = await fetch(LED_WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ state: state })
+      });
       var data = await res.json();
       if (res.ok) {
         updateLedUI(next);
